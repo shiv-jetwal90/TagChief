@@ -5,7 +5,6 @@ import nltk
 from flask import request, render_template, jsonify
 from collections import defaultdict
 from nltk.stem.snowball import EnglishStemmer 
-import sqlite3
 import redis
 conn = redis.Redis('localhost')
 tokenizer = nltk.word_tokenize
@@ -76,3 +75,4 @@ def clear():
 	return "all indexed has been removed"
 
 app.run()
+	
