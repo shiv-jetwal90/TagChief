@@ -1,7 +1,7 @@
 import flask
 import nltk
-#nltk.download('stopwords')
-#nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('punkt')
 from flask import request, render_template, jsonify
 from collections import defaultdict
 from nltk.stem.snowball import EnglishStemmer 
