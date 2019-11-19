@@ -2,23 +2,49 @@
 <html>
 <head>
 	<title>MyPage</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<style>
+		.first{
+			padding-top: 100px;
+			width: 500px;
+		}
+		.second{
+			padding-top: 100px;
+			width: 500px;
+		}
+		.third{
+			padding-top: 100px;
+			width: 500px;
+
+		}
+		.heading{
+			padding-top: 50px;
+
+
+		}
+	</style>
 </head>
 <body>
-	<form action="/index" method="get" style="position: left">
-		<input type="text" class="form-control" placeholder="Enter a paragraph" 
-		name="paragraph">
-		<input class="form-control btn btn-primary" type="submit" value="Search">
-	</form>
-		<form action="/clear" method="get" style="position: center">
-		<input type="text" class="form-control" placeholder="Enter a index to clear" 
-		name="clear">
-		<input class="form-control btn btn-primary" type="submit" value="Search">
-	</form>
-	<form action="/search" method="get" style="position: right">
-		<input type="text" class="form-control" placeholder="Enter a word" 
-		name="search">
-		<input class="form-control btn btn-primary" type="submit" value="Search">
-	</form>
+	<div align="center" class="heading">
+		<h1>TapChief Coding Challenge for Tech Internship</h1>
+	</div>
+	<div align="center">
+		<form action="/index" method="get" class="first">
+			<input type="text" class="form-control" placeholder="Enter a paragraph which you want to index" 
+			name="paragraph">
+			<input class="form-control btn btn-primary" type="submit" value="Index">
+		</form>
+		<form action="/search" method="get" class="second">
+			<input type="text" class="form-control" placeholder="Enter a word to get index" 
+			name="search">
+			<input class="form-control btn btn-primary" type="submit" value="Search">
+		</form>
+		<form action="/clear" method="get" class="third">
+			<input type="text" class="form-control" placeholder="Enter a word which index need to clear" 
+			name="clear">
+			<input class="form-control btn btn-primary" type="submit" value="Clear">
+		</form>
+	</div>
 
 </body>
 </html>
