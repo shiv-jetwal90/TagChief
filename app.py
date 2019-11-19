@@ -1,11 +1,8 @@
 import flask
-# import nltk
-# nltk.download('stopwords')
-# nltk.download('punkt')
 from flask import request, render_template, jsonify
-#tokenizer = nltk.word_tokenize
+
+
 documents = dict()
-#stopwords = nltk.corpus.stopwords.words('english')
 db = dict()
 rdoc = dict()
 
@@ -22,7 +19,7 @@ def lookup(word):
 		return None
 
  
-def add(document, ind):
+def index(document, ind):
 	t = document.split(" ")
 	for token in t:
 		token = token.lower()
@@ -42,6 +39,10 @@ def add(document, ind):
 			db[token] = []
 			db[token].append(ind)
 	
+def preprocessing(data):
+	data = data.split('  ')
+	for i in range(0, len(data)):
+		index(data[i], str(i + 1))
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -54,9 +55,7 @@ def fun():
 
 @app.route('/index', methods=['GET'])
 def home():
-	data = request.args.get('paragraph').split('  ')
-	for i in range(0, len(data)):
-		add(data[i], str(i + 1))
+	preprocessing(request.args.get('paragraph'))
 	return "Index created successfully for the given paragraph" 
 
 
