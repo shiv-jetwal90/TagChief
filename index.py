@@ -1,49 +1,78 @@
+import flask
 import nltk
 #nltk.download('stopwords')
 #nltk.download('punkt')
+from flask import request, render_template, jsonify
 from collections import defaultdict
 from nltk.stem.snowball import EnglishStemmer 
- 
-class Index:
+import sqlite3
+import redis
+conn = redis.Redis('localhost')
+tokenizer = nltk.word_tokenize
+stemmer = EnglishStemmer()
+index = defaultdict(list)
+documents = {}
+#__unique_id = 0
+stopwords = nltk.corpus.stopwords.words('english')
+
+def lookup( word):
+	word = word.lower()
+	if stemmer:
+		word = stemmer.stem(word)
+	if conn.get(word):
+		return conn.get(word).decode("utf-8")
+	else:
+		return None
 
  
-    def __init__(self, tokenizer, stemmer=None, stopwords=None):
+def add( document):
+	print(document)
+	for token in [t.lower() for t in nltk.word_tokenize(document)]:
+		#print(token)
+		if token in stopwords:
+			continue
+		if stemmer:
+			token = stemmer.stem(token)
+		if conn.get(token):
+			if document in conn.get(token).decode("utf-8"):
+				pass
+			else:
+				st = conn.get(token).decode("utf-8")+ "\n\n"+ document
+				conn.set(token, st)
+		else:
+			conn.set(token, document)
 
-        self.tokenizer = tokenizer
-        self.stemmer = stemmer
-        self.index = defaultdict(list)
-        self.documents = {}
-        self.__unique_id = 0
-        if not stopwords:
-            self.stopwords = set()
-        else:
-            self.stopwords = set(stopwords)
- 
-    def lookup(self, word):
-        word = word.lower()
-        if self.stemmer:
-            word = self.stemmer.stem(word)
-        return [id for id in self.index.get(word)]
- 
-    def add(self, document):
-        for token in [t.lower() for t in nltk.word_tokenize(document)]:
-            if token in self.stopwords:
-                continue
- 
-            if self.stemmer:
-                token = self.stemmer.stem(token)
- 
-            if self.__unique_id not in self.index[token]:
-                self.index[token].append(self.__unique_id)
- 
-        self.documents[self.__unique_id] = document
-        self.__unique_id += 1           
- 
- 
-index = Index(nltk.word_tokenize, 
-              EnglishStemmer(), 
-              nltk.corpus.stopwords.words('english'))
-for i in (["hello how are you", "sumit how ram amit hello"]):
-	index.add(i);
-print(index.lookup("sumit"))
+app = flask.Flask(__name__)
+app.config["DEBUG"] = True
 
+@app.route('/')
+def fun():
+	return render_template('index.html')
+
+
+
+@app.route('/index', methods=['GET'])
+def home():
+	data = request.args.get('paragraph').split('  ')
+	for i in data:
+		add(i)
+	#print(data.split('  '))
+	return "index created successfully for these document"
+
+
+@app.route('/search', methods=['GET'])
+def func():
+	data = request.args.get('search')
+	#print(data.split('  '))
+	print(lookup(data))
+	return jsonify(lookup(data))
+
+
+@app.route('/clear', methods =['GET'])
+
+def clear():
+	data = request.args.get('clear')
+	conn.delete(data)
+	return "all indexed has been removed"
+
+app.run()
